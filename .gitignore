@@ -1,0 +1,12 @@
+# Ignore Python virtual environment
+.venv/
+
+# Ignore Python Build Folder
+build/
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+
+# Ignore PyInstaller spec if you don’t want it
+main.spec
