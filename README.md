@@ -1,3 +1,4 @@
-This is my first-ever Python project. I wanted to build something I would personally use a tool that could help me during my daily sessions on CS2. I plan to continue improving this project as I grow in skill and knowledge.
-- The main.exe file is located in the 'dist' folder
-- 2025.06.13
+This is my first Python project. I wanted to build something I would personally use as a tool that could help me during my daily sessions on CS2. I plan to continue improving this project as I grow in skill and knowledge.
+I plan to improve this project with new features and updates. There’s a lot I have planned.
+
+-README.md will be more polished and have more information later as my main goal is to have the program itself work without issues.
