@@ -10,3 +10,5 @@ __pycache__/
 
 # Ignore PyInstaller spec if you don’t want it
 main.spec
+
+change_log.txt
