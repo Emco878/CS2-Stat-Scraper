@@ -1,3 +1,7 @@
+# MIT License
+# Copyright (c) 2025 Andrew
+# See LICENSE file for full license
+
 # ---- Silence *all* stderr before noisy libraries load ---- #
 import os, sys
 sys.stderr.flush()
@@ -68,7 +72,7 @@ def generate_stats(driver, steam_id):
         print(f"\nSteam Name: {username_text}")
         print(f"{Fore.LIGHTBLACK_EX}This player has no match data.{Style.RESET_ALL}")
         return
-        
+
     #* KD DIV *#
     kd = float(player_div.find("div", id="kpd").text.strip())
 
@@ -93,18 +97,19 @@ def generate_stats(driver, steam_id):
             adr = int(value_text)
 
     #* USERNAME PRINT *#
-    score = 0
     print(f"\nSteam Name: {username_text}")
 
     #* KD PRINT *#
+    score = 0
+
     if kd >= 2.0:
-        print(f"KD: {Fore.RED}{kd:.2f}{Style.RESET_ALL}")  # Red
+        print(f"KD: {Fore.RED}{kd:.2f}{Style.RESET_ALL}")
         score += 2
     elif kd >= 1.6:
-        print(f"KD: {Fore.YELLOW}{kd:.2f}{Style.RESET_ALL}")  # Yellow
+        print(f"KD: {Fore.YELLOW}{kd:.2f}{Style.RESET_ALL}")
         score += 1
     else:
-        print(f"KD: {Fore.LIGHTBLUE_EX}{kd:.2f}{Style.RESET_ALL}")  # Light Blue
+        print(f"KD: {Fore.LIGHTBLUE_EX}{kd:.2f}{Style.RESET_ALL}")
 
     #* HLTV_RATING PRINT *#
     if hltv_rating >= 1.5:
@@ -147,9 +152,9 @@ def generate_stats(driver, steam_id):
         print(f"ADR: {Fore.LIGHTBLUE_EX}{adr}{Style.RESET_ALL}")
 
     #* SCORE PRINT *#
-    if score >= 8:
+    if score >= 9:
         print(f"{Fore.RED}SCORE: {score}/10{Style.RESET_ALL}")
-    elif score >= 6:
+    elif score >= 7:
         print(f"{Fore.YELLOW}SCORE: {score}/10{Style.RESET_ALL}")
     else:
         print(f"{Fore.LIGHTBLUE_EX}SCORE: {score}/10{Style.RESET_ALL}")
@@ -159,14 +164,15 @@ def generate_stats(driver, steam_id):
 
 # Main Program
 if __name__ == "__main__":
-    print(Fore.MAGENTA + r"""
-   ____   ____    ____        __        __       _              ____                                              
-  / ___| / ___|  |___ \       \ \      / / ___  | |__          / ___|    ___   _ __   __ _   _ __     ___   _ __ 
- | |     \___ \    __) |       \ \ /\ / / / _ \ |  _ \         \___ \   / __| |  __| / _  | |  _ \   / _ \ |  __|
- | |___   ___) |  / __/         \ V  V / |  __/ | |_) |         ___) | | (__  | |   | (_| | | |_) | |  __/ | |   
-  \____| |____/  |_____|  _____  \_/\_/   \___| |____/  _____  |____/   \___| |_|    \____| |  __/   \___| |_|   
-                         |_____|                       |_____|                              |_|                  
-          """)
+    print(Fore.MAGENTA + r""" 
+ ██████╗███████╗██████╗         ██╗    ██╗███████╗██████╗         ███████╗ ██████╗██████╗  █████╗ ██████╗ ███████╗██████╗ 
+██╔════╝██╔════╝╚════██╗        ██║    ██║██╔════╝██╔══██╗        ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
+██║     ███████╗ █████╔╝        ██║ █╗ ██║█████╗  ██████╔╝        ███████╗██║     ██████╔╝███████║██████╔╝█████╗  ██████╔╝
+██║     ╚════██║██╔═══╝         ██║███╗██║██╔══╝  ██╔══██╗        ╚════██║██║     ██╔══██╗██╔══██║██╔═══╝ ██╔══╝  ██╔══██╗
+╚██████╗███████║███████╗███████╗╚███╔███╔╝███████╗██████╔╝███████╗███████║╚██████╗██║  ██║██║  ██║██║     ███████╗██║  ██║
+ ╚═════╝╚══════╝╚══════╝╚══════╝ ╚══╝╚══╝ ╚══════╝╚═════╝ ╚══════╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+    """)
         
     print("Max Seconds per Instance (Default 15) >", end=" ", flush=True)
     user_input = input().strip()
@@ -176,12 +182,12 @@ if __name__ == "__main__":
         print(f"{Fore.RED}Using {custom_time} seconds per instance...\n{Style.RESET_ALL}")
     else:
         custom_time = 15  # Default fallback value
-        print(f"{Fore.RED}Using default 15 seconds...\n{Style.RESET_ALL}")
+        print(f"{Fore.RED}Using 15 seconds per instance...\n{Style.RESET_ALL}")
 
     while True:
         driver = make_driver()
         driver.minimize_window()
-        print("Enter up to 10 Steam Profile Links (Leave the input blank and press Enter to stop early) (CTRL + C to Exit):")
+        print(f"Enter up to 10 Steam Profile Links (Leave the input blank and press Enter to stop early) {Fore.GREEN}(CTRL + C to Exit):{Style.RESET_ALL}")
         
         steam_profiles = []
         while len(steam_profiles) < 10:
@@ -207,3 +213,5 @@ if __name__ == "__main__":
         print("\nPress Enter to continue...", end=" ", flush=True)
         input()
         print()
+
+# TODO: Create a very simple GUI

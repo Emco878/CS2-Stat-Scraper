@@ -3,6 +3,7 @@
 
 # Ignore Python Build Folder
 build/
+dist/
 
 # Ignore compiled Python files
 __pycache__/
