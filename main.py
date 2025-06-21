@@ -20,7 +20,7 @@ from bs4 import BeautifulSoup
 from colorama import init, Fore, Style
 init(autoreset=True) # Color reset after every print
 
-# ---- Resolve SteamID64 from Steam Profile URL ---- #
+# ---- Resolve SteamID64 and Username from Steam Profile URL ---- #
 def get_steam_id(url):
     if url.startswith("https://steamcommunity.com/"):
         xml_url = url.rstrip('/') + '?xml=1'  # Append ?xml=1 in the URL for XML format
@@ -32,7 +32,9 @@ def get_steam_id(url):
         try:
             root = ET.fromstring(response.text)  # ET.fromstring(...) now only runs on real XML, preventing crashes
             steam_id64 = root.find("steamID64").text
-            return steam_id64
+            username_text = root.find("steamID").text
+
+            return steam_id64, username_text
         except Exception:
             return None
 
@@ -63,9 +65,6 @@ def generate_stats(driver, steam_id):
     doc = BeautifulSoup(driver.page_source, "html.parser")
     player_div = doc.find("div", id="player")
     if not player_div: return
-
-    #* USERNAME *#
-    username_text = player_div.find("div", id="player-info").text.strip()
 
     #* NO DATA ACCOUNT STATUS *#
     if player_div.find("span", string="No matches have been added for this player"):
@@ -197,7 +196,7 @@ if __name__ == "__main__":
                 print(f"{Fore.GREEN}Loading...{Style.RESET_ALL}")
                 break   # Stop early if input is blank
 
-            steam_id = get_steam_id(url)
+            steam_id, username_text = get_steam_id(url)
             if steam_id:
                 steam_profiles.append(steam_id)
             else:
