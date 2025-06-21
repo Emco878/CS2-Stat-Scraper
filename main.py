@@ -47,7 +47,7 @@ def make_driver():  # Build a quiet ChromeDriver
     return webdriver.Chrome(service=service, options=chrome_opts)
 
 # ---- Main Scraping Logic ---- #
-def generate_stats(driver, steam_id):
+def generate_stats(driver, steam_id, username_text):
     driver.switch_to.new_window("tab")  # New tab
     driver.minimize_window()    # Minimizes the Window once a Chrome Instance Starts
     driver.get(f"https://csstats.gg/player/{steam_id}")
@@ -196,15 +196,16 @@ if __name__ == "__main__":
                 print(f"{Fore.GREEN}Loading...{Style.RESET_ALL}")
                 break   # Stop early if input is blank
 
-            steam_id, username_text = get_steam_id(url)
-            if steam_id:
-                steam_profiles.append(steam_id)
+            result = get_steam_id(url) # Try to fetch both the 64-bit SteamID and the display Username from the XML
+            if result:
+                steam_id, username_text = result
+                steam_profiles.append((steam_id, username_text))
             else:
                 print(f"{Fore.RED}Could not resolve SteamID for that link.\n{Style.RESET_ALL}")
                 continue
 
-        for steam_id in steam_profiles:
-            generate_stats(driver, steam_id)
+        for steam_id, username_text in steam_profiles:
+            generate_stats(driver, steam_id, username_text)
         
         driver.quit()   # Closes Chrome once the for loop is finished
 
