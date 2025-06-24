@@ -2,14 +2,13 @@
 # Copyright (c) 2025 Andrew
 # See LICENSE file for full license
 
-# ---- Silence *all* stderr before noisy libraries load ---- #
-import os, sys
-sys.stderr.flush()
-devnull = os.open(os.devnull, os.O_WRONLY)  # Windows “/dev/null”
-os.dup2(devnull, 2) # Redirect fd-2 (stderr)
+# ---- GUI Customtkinter Imports ---- #
+import customtkinter as ctk
+import tkinter as tk
 
 # ---- Regular Imports ---- #
-import time, requests, xml.etree.ElementTree as ET
+import requests, xml.etree.ElementTree as ET
+import threading
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -17,8 +16,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-from colorama import init, Fore, Style
-init(autoreset=True) # Color reset after every print
+
+# ---- Globals ---- #
+steam_links = []
 
 # ---- Resolve SteamID64 and Username from Steam Profile URL ---- #
 def get_steam_id(url):
@@ -46,6 +46,39 @@ def make_driver():  # Build a quiet ChromeDriver
     service = Service(log_path="nul")   # “nul” discards ChromeDriver logs
     return webdriver.Chrome(service=service, options=chrome_opts)
 
+# ---- GUI Setup ---- #
+window = ctk.CTk()
+window.geometry("550x885")
+window.title("CS2 Stat Scraper")
+window.configure(bg='#1E1E1E')
+window.resizable(width=False, height=False)
+
+# ---- Custom Time ---- #
+def custom_time():
+    value = max_seconds_input.get()
+    return int(value) if value.isdigit() else 15
+
+# ---- Steam Url ---- #
+def steam_url():
+    steam_link_input = steam_profile_link_input.get().strip()
+    
+    if steam_link_input.startswith("https://steamcommunity.com/"):
+        if len(steam_links) < 10:
+            steam_links.append(steam_link_input)
+            steam_profile_error_label.configure(text="")
+            shortened_steam_link = steam_link_input.split("/")[4]
+            console_output.insert("end", f"Added: {shortened_steam_link}\n", "green_highlight")
+            steam_profile_link_input.delete(0, "end")
+        else:
+            steam_profile_error_label.configure(text="Max 10 links allowed")
+    else:
+        steam_profile_error_label.configure(text="Invalid Steam profile link")
+    console_output.see("end")
+
+# ---- Keyboard ENTER Input ---- #
+def enter_key_clicked(event=None):
+        steam_url()
+
 # ---- Main Scraping Logic ---- #
 def generate_stats(driver, steam_id, username_text):
     driver.switch_to.new_window("tab")  # New tab
@@ -53,11 +86,11 @@ def generate_stats(driver, steam_id, username_text):
     driver.get(f"https://csstats.gg/player/{steam_id}")
     
     try:
-        WebDriverWait(driver, custom_time).until(   # Wait up to 'custom_time' seconds until the div with id="player" appears
+        WebDriverWait(driver, custom_time()).until(   # Wait up to 'custom_time' seconds until the div with id="player" appears
             EC.presence_of_element_located((By.ID, "kpd"))
         )
     except:
-        print(f"{Fore.RED}\nTimeout: Player data failed to load for {steam_id}{Style.RESET_ALL}")
+        console_output.insert("end", f"🔴 Timeout: Player data failed to load for {username_text}\n", "red_highlight")
         driver.close()  # Closes the current tab or window that Selenium is focused on
         driver.switch_to.window(driver.window_handles[0])   # Switches Selenium’s control back to the first tab (index 0 in the list of open tabs)
         return
@@ -68,8 +101,10 @@ def generate_stats(driver, steam_id, username_text):
 
     #* NO DATA ACCOUNT STATUS *#
     if player_div.find("span", string="No matches have been added for this player"):
-        print(f"\nSteam Name: {username_text}")
-        print(f"{Fore.LIGHTBLACK_EX}This player has no match data.{Style.RESET_ALL}")
+        console_output.insert("end", f"Steam Name: {username_text}\n")
+        console_output.insert("end", "This player has no match data.\n", "lightblue_highlight")
+        console_output.insert("end", "\n")
+        console_output.see("end")
         return
 
     #* KD DIV *#
@@ -95,122 +130,215 @@ def generate_stats(driver, steam_id, username_text):
         elif "ADR" in heading:
             adr = int(value_text)
 
+    #* PRINT STATS *#
+    score = 0
+    def print_stats(value_red, value_yellow, label, tag, suffix="", decimal=True):
+        nonlocal score
+        if tag > value_red:
+            highlight = "red_highlight"
+            score += 2
+        elif tag > value_yellow:
+            highlight = "yellow_highlight"
+            score += 1
+        else:
+            highlight = "lightblue_highlight"
+
+        decimal_value = f"{tag:.2f}" if decimal else f"{int(tag)}"
+        
+        console_output.insert("end", f"{label}")
+        console_output.insert("end", f"{decimal_value}{suffix}\n", highlight)
+        return score
+
     #* USERNAME PRINT *#
-    print(f"\nSteam Name: {username_text}")
+    console_output.insert("end", f"Steam Name: {username_text}\n")
 
     #* KD PRINT *#
-    score = 0
-
-    if kd >= 2.0:
-        print(f"KD: {Fore.RED}{kd:.2f}{Style.RESET_ALL}")
-        score += 2
-    elif kd >= 1.6:
-        print(f"KD: {Fore.YELLOW}{kd:.2f}{Style.RESET_ALL}")
-        score += 1
-    else:
-        print(f"KD: {Fore.LIGHTBLUE_EX}{kd:.2f}{Style.RESET_ALL}")
+    score = print_stats(2.0, 1.6, "KD: ", kd)
 
     #* HLTV_RATING PRINT *#
-    if hltv_rating >= 1.5:
-        print(f"HLTV RATING: {Fore.RED}{hltv_rating:.2f}{Style.RESET_ALL}")
-        score += 2
-    elif hltv_rating >= 1.3:
-        print(f"HLTV RATING: {Fore.YELLOW}{hltv_rating:.2f}{Style.RESET_ALL}")
-        score += 1
-    else:
-        print(f"HLTV RATING: {Fore.LIGHTBLUE_EX}{hltv_rating:.2f}{Style.RESET_ALL}")
+    score = print_stats(1.5, 1.3, "HLTV RATING: ", hltv_rating)
 
     #* WIN RATE PRINT *#
-    if win_rate >= 70:
-        print(f"Win Rate: {Fore.RED}{win_rate}%{Style.RESET_ALL}")
-        score += 2
-    elif win_rate >= 60:
-        print(f"Win Rate: {Fore.YELLOW}{win_rate}%{Style.RESET_ALL}")
-        score += 1
-    else:
-        print(f"Win Rate: {Fore.LIGHTBLUE_EX}{win_rate}%{Style.RESET_ALL}")
-
+    score = print_stats(70, 60, "Win Rate: ", win_rate, suffix="%", decimal=False)
+    
     #* HS% PRINT *#
-    if hs >= 70:
-        print(f"Headshot Percentage: {Fore.RED}{hs}%{Style.RESET_ALL}")
-        score += 2
-    elif hs >= 60:
-        print(f"Headshot Percentage: {Fore.YELLOW}{hs}%{Style.RESET_ALL}")
-        score += 1
-    else:
-        print(f"Headshot Percentage: {Fore.LIGHTBLUE_EX}{hs}%{Style.RESET_ALL}")
+    score = print_stats(70, 60, "Headshot Percentage: ", hs, suffix="%", decimal=False)
 
     #* ADR PRINT *#
-    if adr >= 110:
-        print(f"ADR: {Fore.RED}{adr}{Style.RESET_ALL}")
-        score += 2
-    elif adr >= 100:
-        print(f"ADR: {Fore.YELLOW}{adr}{Style.RESET_ALL}")
-        score += 1
-    else:
-        print(f"ADR: {Fore.LIGHTBLUE_EX}{adr}{Style.RESET_ALL}")
+    score = print_stats(110, 100, "ADR: ", adr, decimal=False)
 
     #* SCORE PRINT *#
-    if score >= 9:
-        print(f"{Fore.RED}SCORE: {score}/10{Style.RESET_ALL}")
-    elif score >= 7:
-        print(f"{Fore.YELLOW}SCORE: {score}/10{Style.RESET_ALL}")
+    if (score >= 9):
+        console_output.insert("end", f"SCORE: {score}\n", "red_highlight")
+    elif (score >= 7):
+        console_output.insert("end", f"SCORE: {score}\n", "yellow_highlight")
     else:
-        print(f"{Fore.LIGHTBLUE_EX}SCORE: {score}/10{Style.RESET_ALL}")
-        
+        console_output.insert("end", f"SCORE: {score}\n", "lightblue_highlight")
+
+    console_output.insert("end", "\n")
+    console_output.see("end")
+    
     driver.close()  # Close the stats tab
     driver.switch_to.window(driver.window_handles[0])  # Back to main tab
 
-# Main Program
-if __name__ == "__main__":
-    print(Fore.MAGENTA + r""" 
-   ____   ____    ____        __        __       _              ____
-  / ___| / ___|  |___ \       \ \      / / ___  | |__          / ___|    ___   _ __   __ _   _ __     ___   _ __
- | |     \___ \    __) |       \ \ /\ / / / _ \ |  _ \         \___ \   / __| |  __| / _  | |  _ \   / _ \ |  __|
- | |___   ___) |  / __/   _____ \ V  V / |  __/ | |_) | _____   ___) | | (__  | |   | (_| | | |_) | |  __/ | |
-  \____| |____/  |_____| |_____| \_/\_/   \___| |____/ |_____| |____/   \___| |_|    \____| |  __/   \___| |_|
- __________________________________________________________________________________________ |_| _________________
-    """)
-        
-    print("Max Seconds per Instance (Default 15) >", end=" ", flush=True)
-    user_input = input().strip()
+# ---- Start Button Command ---- #
+def start_command():
+    if not steam_links:
+        steam_profile_error_label.configure(text="Invalid Steam profile link")
+        console_output.see("end")
+        return
 
-    if user_input.isdigit():  # Check if input is all digits
-        custom_time = int(user_input)
-        print(f"{Fore.RED}Using {custom_time} seconds per instance...\n{Style.RESET_ALL}")
+    reset_gui()
+    
+    # Disable UI during scraping
+    start_button.configure(state="disabled")
+    enter_button.configure(state="disabled")
+    clear_button.configure(state="disabled")
+    steam_profile_link_input.configure(state="disabled")
+    max_seconds_input.configure(state="disabled")
+
+    # Start background thread
+    threading.Thread(target=run_scraper, daemon=True).start()
+    
+    steam_profile_error_label.configure(text="")
+    console_output.insert("end", f"\nUsing {custom_time()} seconds\n", "red_highlight")
+    console_output.insert("end", "Loading...\n\n", "green_highlight")
+    console_output.see("end")
+
+# ---- Clear Button Command ---- #
+clear_visible = False
+
+def clear_confirm():
+    global clear_visible
+    if clear_visible:
+        clear_yes.place_forget()
+        clear_no.place_forget()
+        clear_visible = False
     else:
-        custom_time = 15  # Default fallback value
-        print(f"{Fore.RED}Using 15 seconds per instance...\n{Style.RESET_ALL}")
+        clear_yes.place(x=130, y=830)
+        clear_no.place(x=30, y=830)
+        clear_visible = True
 
-    while True:
-        driver = make_driver()
-        driver.minimize_window()
-        print(f"Enter up to 10 Steam Profile Links (Leave the input blank and press Enter to stop early) {Fore.GREEN}(CTRL + C to Exit):{Style.RESET_ALL}")
-        
-        steam_profiles = []
-        while len(steam_profiles) < 10:
-            print("Steam Profile Link >", end=" ", flush=True)  # Print the prompt without a newline, add a space after '>', and flush the output buffer immediately so it appears right away
-            url = input().strip()   # Wait for the user to type input, then remove any leading/trailing spaces or newlines
+def reset_gui():
+    max_seconds_input.delete(0, "end")
+    max_seconds_input.configure(placeholder_text="Default (15)")
+    steam_profile_link_input.delete(0, "end")
+    steam_profile_link_input.configure(placeholder_text="https://steamcommunity.com/")
+    steam_profile_error_label.configure(text="")
 
-            if not url:
-                print(f"{Fore.GREEN}Loading...{Style.RESET_ALL}")
-                break   # Stop early if input is blank
+def clear_command():
+    reset_gui()
+    console_output.delete("1.0", "end")
+    steam_links.clear() # Clears Steam Links from memory
 
-            result = get_steam_id(url) # Try to fetch both the 64-bit SteamID and the display Username from the XML
-            if result:
-                steam_id, username_text = result
-                steam_profiles.append((steam_id, username_text))
-            else:
-                print(f"{Fore.RED}Could not resolve SteamID for that link.\n{Style.RESET_ALL}")
-                continue
+    console_output.insert("end", "🟢 Cleared\n\n", "green_highlight")
 
-        for steam_id, username_text in steam_profiles:
+    # Hide Yes and No Button after Clearing
+    clear_yes.place_forget()
+    clear_no.place_forget()
+    global clear_visible
+    clear_visible = False
+
+    console_output.after(500, lambda: console_output.delete("1.0", "end")) # After 1 second, call an anonymous function (lambda) that deletes all text from the textbox
+    
+# ---- Threading ---- #
+def run_scraper():
+    driver = make_driver()
+
+    for url in steam_links:
+        result = get_steam_id(url)
+        if result:
+            steam_id, username_text = result
             generate_stats(driver, steam_id, username_text)
-        
-        driver.quit()   # Closes Chrome once the for loop is finished
+        else:
+            shortened_url = url.split("/")[4]
+            console_output.insert("end", f"🔴 Could not resolve SteamID for: {shortened_url}\n", "red_highlight")
+            console_output.see("end")
 
-        print("\nPress Enter to continue...", end=" ", flush=True)
-        input()
-        print()
+    driver.quit()
+    steam_links.clear()
 
-# TODO: Create a very simple GUI
+    # Re-enable UI after scraping
+    start_button.configure(state="normal")
+    enter_button.configure(state="normal")
+    clear_button.configure(state="normal")
+    steam_profile_link_input.configure(state="normal")
+    max_seconds_input.configure(state="normal")
+    
+    console_output.insert("end", "🟢 All profiles processed!\n\n", "green_highlight")
+    console_output.see("end")
+
+#* TITLE *#
+title_label = ctk.CTkLabel(window, text='CS2-Stat-Scraper', font=('Consolas', 56, 'bold'), text_color='#FFFFFF', fg_color="transparent", pady=20)
+title_label.place(relx=0.5, y=0, anchor="n")
+
+#* MAX SECONDS LABEL *#
+max_seconds_label = ctk.CTkLabel(window, text='Max Seconds per Instance:', font=('Segoe UI', 18), text_color='#FFFFFF', fg_color="transparent")
+max_seconds_label.place(x=30, y=100)
+
+#* MAX SECONDS INPUT *#
+max_seconds_input = ctk.CTkEntry(window, font=('Segoe UI', 18), width=240, height=38, corner_radius=8, fg_color="#1E1E1E", border_color="#FFFFFF", border_width=1.5,
+                                 text_color="#FFFFFF", placeholder_text="Default (15)")
+max_seconds_input.place(x=30, y=135)
+
+#* STEAM PROFILE LINK LABEL *#
+steam_profile_link_label = ctk.CTkLabel(window, text='Steam Profile Link:', font=('Segoe UI', 18), text_color='#FFFFFF', fg_color="transparent")
+steam_profile_link_label.place(x=30, y=190)
+
+#* STEAM PROFILE LINK INPUT *#
+steam_profile_link_input = ctk.CTkEntry(window, font=('Segoe UI', 18), width=360, height=38, corner_radius=8, fg_color="#1E1E1E", border_color="#FFFFFF", border_width=1.5,
+                                        text_color="#FFFFFF", placeholder_text="https://steamcommunity.com/")
+steam_profile_link_input.place(x=30, y=225)
+steam_profile_link_input.bind("<Return>", enter_key_clicked)    # Allows to press the ENTER Key on keyboard instead of the Button
+
+#* STEAM PROFILE ERROR LABEL *#
+steam_profile_error_label = ctk.CTkLabel(window, text="", font=('Segoe UI', 16), text_color='#FF0000', fg_color="transparent")
+steam_profile_error_label.place(x=30, y=265)
+
+#* CONSOLE TITLE LABEL *#
+console_label = ctk.CTkLabel(window, text='Console:', font=('Segoe UI', 18), text_color='#FFFFFF', fg_color="transparent")
+console_label.place(x=30, y=300)
+
+#* CONSOLE OUTPUT *#
+console_output = ctk.CTkTextbox(window, font=('Segoe UI', 16), width=480, height=480, corner_radius=8, fg_color="#1E1E1E", border_color="#FFFFFF", border_width=1.5,
+                                text_color="#FFFFFF", wrap='none')
+console_output.place(x=30, y=335)
+
+console_output.tag_config("red_highlight", foreground="#FF0000")
+console_output.tag_config("yellow_highlight", foreground="#FFFF00")
+console_output.tag_config("lightblue_highlight", foreground="#00A6FF")
+console_output.tag_config("green_highlight", foreground="#00FF00")
+
+#* START BUTTON *#
+start_button = ctk.CTkButton(window, command=start_command, text="START", font=('Segoe UI', 18), width=130, height=50, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
+start_button.place(x=335, y=129)
+
+#* ENTER BUTTON *#
+enter_button = ctk.CTkButton(window, command=steam_url, text="Enter", font=('Segoe UI', 18), width=90, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
+enter_button.place(x=420, y=225)
+
+#* CLEAR BUTTON *#
+clear_button = ctk.CTkButton(window, command=clear_confirm, text="Clear", font=('Segoe UI', 18), width=90, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
+clear_button.place(x=30, y=830)
+
+#* CLEAR YES *#
+clear_yes = ctk.CTkButton(window, command=clear_command, text="Yes", font=('Segoe UI', 18), width=90, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
+
+#* CLEAR NO *#
+clear_no = ctk.CTkButton(window, command=clear_confirm, text="No", font=('Segoe UI', 18), width=90, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
+
+# Bind to background clicks to remove focus
+def unfocus(event):
+    if isinstance(event.widget, (ctk.CTkEntry, ctk.CTkButton, ctk.CTkOptionMenu, ctk.CTkCheckBox, ctk.CTkSwitch, tk.Entry, tk.Button)): # If the clicked widget is an interactive input, don't remove focus
+        return  # Keep focus
+    window.focus()
+
+window.bind("<Button-1>", unfocus)
+window.mainloop()
+
+# TODO: 
