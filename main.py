@@ -187,8 +187,6 @@ def start_command():
         steam_profile_error_label.configure(text="Invalid Steam profile link")
         console_output.see("end")
         return
-
-    reset_gui()
     
     # Disable UI during scraping
     start_button.configure(state="disabled")
@@ -204,6 +202,8 @@ def start_command():
     console_output.insert("end", f"\nUsing {custom_time()} seconds\n", "red_highlight")
     console_output.insert("end", "Loading...\n\n", "green_highlight")
     console_output.see("end")
+
+    reset_gui()
 
 # ---- Clear Button Command ---- #
 clear_visible = False
@@ -341,4 +341,4 @@ def unfocus(event):
 window.bind("<Button-1>", unfocus)
 window.mainloop()
 
-# TODO: 
+# TODO: Integrate a built-in browser
