@@ -56,7 +56,12 @@ window.resizable(width=False, height=False)
 # ---- Custom Time ---- #
 def custom_time():
     value = max_seconds_input.get()
-    return int(value) if value.isdigit() else 15
+    if value.isdigit() and int(value) > 0 and int(value) <= 180:
+        return int(value)
+    elif value.isdigit() and int(value) > 180:
+        return 180
+    else:
+        return 15
 
 # ---- Steam Url ---- #
 def steam_url():
@@ -86,26 +91,35 @@ def generate_stats(driver, steam_id, username_text):
     driver.get(f"https://csstats.gg/player/{steam_id}")
     
     try:
-        WebDriverWait(driver, custom_time()).until(   # Wait up to 'custom_time' seconds until the div with id="player" appears
-            EC.presence_of_element_located((By.ID, "kpd"))
+        WebDriverWait(driver, 2).until(   # Wait up to '2' seconds until the 'No matches have been added for this player' appears
+            EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'No matches have been added for this player')]")
+            )
         )
-    except:
-        console_output.insert("end", f"🔴 Timeout: Player data failed to load for {username_text}\n", "red_highlight")
-        driver.close()  # Closes the current tab or window that Selenium is focused on
-        driver.switch_to.window(driver.window_handles[0])   # Switches Selenium’s control back to the first tab (index 0 in the list of open tabs)
+
+        #* NO DATA ACCOUNT STATUS *#
+        console_output.insert("end", f"Steam Name: {username_text}\n")
+        console_output.insert("end", "This player has no match data\n", "red_highlight")
+        console_output.insert("end", "\n")
+        console_output.see("end")
+
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
         return
+
+    except:
+        try:
+            WebDriverWait(driver, custom_time()).until(
+                EC.presence_of_element_located((By.ID, "kpd"))
+            )
+        except:
+            console_output.insert("end", f"🔴 Timeout: Player data failed to load for {username_text}\n", "red_highlight")
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+            return
 
     doc = BeautifulSoup(driver.page_source, "html.parser")
     player_div = doc.find("div", id="player")
     if not player_div: return
-
-    #* NO DATA ACCOUNT STATUS *#
-    if player_div.find("span", string="No matches have been added for this player"):
-        console_output.insert("end", f"Steam Name: {username_text}\n")
-        console_output.insert("end", "This player has no match data.\n", "lightblue_highlight")
-        console_output.insert("end", "\n")
-        console_output.see("end")
-        return
 
     #* KD DIV *#
     kd = float(player_div.find("div", id="kpd").text.strip())
@@ -341,4 +355,4 @@ def unfocus(event):
 window.bind("<Button-1>", unfocus)
 window.mainloop()
 
-# TODO: Integrate a built-in browser
+# TODO: Commit Changes (Don't forget to create .exe), Integrate a built-in browser
