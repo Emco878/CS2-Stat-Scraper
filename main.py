@@ -317,6 +317,8 @@ console_label.place(x=30, y=300)
 console_output = ctk.CTkTextbox(window, font=('Segoe UI', 16), width=480, height=480, corner_radius=8, fg_color="#1E1E1E", border_color="#FFFFFF", border_width=1.5,
                                 text_color="#FFFFFF", wrap='none')
 console_output.place(x=30, y=335)
+console_output.bind("<Key>", lambda e: "break") # Block all keyboard input
+console_output.configure(insertwidth=0) # Hide the cursor
 
 console_output.tag_config("red_highlight", foreground="#FF0000")
 console_output.tag_config("yellow_highlight", foreground="#FFFF00")
@@ -355,4 +357,4 @@ def unfocus(event):
 window.bind("<Button-1>", unfocus)
 window.mainloop()
 
-# TODO: Commit Changes (Don't forget to create .exe), Integrate a built-in browser
+# TODO: 
