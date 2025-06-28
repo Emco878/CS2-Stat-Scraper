@@ -52,7 +52,7 @@ window.geometry("550x885")
 window.title("CS2 Stat Scraper")
 window.configure(bg='#1E1E1E')
 window.resizable(width=False, height=False)
-window.iconbitmap("images\icon.ico")
+window.iconbitmap("images/icon.ico")
 
 # ---- Custom Time ---- #
 def custom_time():
