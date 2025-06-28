@@ -35,7 +35,7 @@ Download `CS2 Stat Scraper.exe`
 
 > ⚠️ *Note: These are examples of the logic. This is not actual code from `main.py`.*
 
-The scoring system is simple:  Average high stats are marked as 🟡 Yellow, while suspiciously high stats are marked as 🔴 Red.
+The scoring system is simple: *Average High Stats* are marked as 🟡 Yellow, while *Suspiciously High Stats* are marked as 🔴 Red.
 
 🔵 **Blue** = Average  
 🟡 **Yellow** = Higher than average  
