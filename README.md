@@ -92,7 +92,7 @@ There are 4 possible error messages:
     - No data exists for that player on `CSStats.gg`.
 - ❗ Could not resolve SteamID
     - The Steam profile does not exist.
-- ❗ Timeout Player data filed to load
+- ❗ Timeout Player data failed to load
     - Not enough time to load data from `CSStats.gg`.
     - 💡 *Recommendation: Increase the Max Seconds per Instance (Max: 180)*
 
@@ -101,7 +101,6 @@ There are 4 possible error messages:
 - Python 3.12 (Recommended)
 
 ## 👨‍💻 Development
-
 Want to contribute? Great!
 
 - Fork the repository: click the `Fork` button at the top-right of the page
