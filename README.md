@@ -42,10 +42,10 @@ The scoring system is simple: suspiciously high stats will be marked as 🟡 Yel
 
 **KD**
 ```python
-if winrate and hs >= 70:
+if kd >= 70:
     print("🔴 Not Legit")
     score += 2
-elif winrate and hs >= 60:
+elif kd >= 60:
     print("🟡 Higher than Average")
     score += 1
 else:
@@ -54,10 +54,10 @@ else:
 
 **HLTV Rating**
 ```python
-if winrate and hs >= 1.5:
+if hltv_rating >= 1.5:
     print("🔴 Not Legit")
     score += 2
-elif winrate and hs >= 1.3:
+elif hltv_rating and hs >= 1.3:
     print("🟡 Higher than Average")
     score += 1
 else:
