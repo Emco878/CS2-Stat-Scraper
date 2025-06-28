@@ -57,7 +57,7 @@ else:
 if hltv_rating >= 1.5:
     print("🔴 Not Legit")
     score += 2
-elif hltv_rating and hs >= 1.3:
+elif hltv_rating >= 1.3:
     print("🟡 Higher than Average")
     score += 1
 else:
