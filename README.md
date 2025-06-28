@@ -1,5 +1,7 @@
 # CS2 Stat Scraper
-***Disclaimer**: This tool is for educational and personal use only. It is not affiliated with or endorsed by csstats.gg. Please respect their [Terms of Service](https://csstats.gg/terms-of-use).*
+***Disclaimer**: This tool is intended for personal and educational use only. It is not affiliated with or endorsed by csstats.gg.  
+Any commercial use of this software, directly or indirectly, is against csstats.gg’s [Terms of Service](https://csstats.gg/terms-of-use) and is strictly prohibited.*
+
 
 <p align="center">
   <img src="images/icon-banner.png" alt="Example Image" width="300"/>
