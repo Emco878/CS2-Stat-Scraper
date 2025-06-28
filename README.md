@@ -1,4 +1,6 @@
 # CS2 Stat Scraper
+***Disclaimer**: This tool is for educational and personal use only. It is not affiliated with or endorsed by csstats.gg. Please respect their [Terms of Service](https://csstats.gg/terms-of-use).*
+
 <p align="center">
   <img src="images/icon-banner.png" alt="Example Image" width="300"/>
 </p>
