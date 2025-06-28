@@ -20,7 +20,7 @@ Any commercial use of this software, directly or indirectly, is against csstats.
 ## 🛠️ Installation
 Download `CS2 Stat Scraper.exe`
 
-    ⚠️ Note: This app is unsigned - SmartScreen may warn you. It’s safe. The source code, can be found in `main.py`
+>⚠️ Note: This app is unsigned - SmartScreen may warn you. It’s safe. The source code, can be found in `main.py`
 
 ## ✨ Features
 - Input up to 10 Steam Profiles
@@ -32,20 +32,26 @@ Download `CS2 Stat Scraper.exe`
 
 
 ## 📊 Score System
-The scoring system is simple: suspiciously high stats will be marked as 🟡 Yellow or 🔴 Red.
 
-🔵 Blue = Average
+> ⚠️ *Note: These are examples of the logic. This is not actual code from `main.py`.*
 
-🟡 Yellow = Higher than average
+The scoring system is simple:  Average high stats are marked as 🟡 Yellow, while suspiciously high stats are marked as 🔴 Red.
 
-🔴 Red = Very unlikely to be legit
+🔵 **Blue** = Average  
+🟡 **Yellow** = Higher than average  
+🔴 **Red** = Very unlikely to be legit
+
+**The score is out of 10**  
+A score between **0-6** will return a 🔵 *Average Account.*  
+A score between **7–8** will return a 🟡 *Suspiciously High Account.*  
+A score between **9–10** will return a 🔴 *Likely Cheating Account.*
 
 **KD**
 ```python
-if kd >= 70:
+if kd >= 2.0:
     print("🔴 Not Legit")
     score += 2
-elif kd >= 60:
+elif kd >= 1.6:
     print("🟡 Higher than Average")
     score += 1
 else:
@@ -100,7 +106,7 @@ There are 4 possible error messages:
     - Not enough time to load data from `CSStats.gg`.
     - 💡 *Recommendation: Increase the Max Seconds per Instance (Max: 180)*
 
-## 📦 Prerequisites
+## 📦 Requirements
 - Chrome
 - Python 3.12 (Recommended)
 
