@@ -52,6 +52,7 @@ window.geometry("550x885")
 window.title("CS2 Stat Scraper")
 window.configure(bg='#1E1E1E')
 window.resizable(width=False, height=False)
+window.iconbitmap("images\icon.ico")
 
 # ---- Custom Time ---- #
 def custom_time():
@@ -77,7 +78,7 @@ def steam_url():
         else:
             steam_profile_error_label.configure(text="Max 10 links allowed")
     else:
-        steam_profile_error_label.configure(text="Invalid Steam profile link")
+        steam_profile_error_label.configure(text="Invalid Steam Profile Link")
     console_output.see("end")
 
 # ---- Keyboard ENTER Input ---- #
@@ -98,7 +99,7 @@ def generate_stats(driver, steam_id, username_text):
 
         #* NO DATA ACCOUNT STATUS *#
         console_output.insert("end", f"Steam Name: {username_text}\n")
-        console_output.insert("end", "This player has no match data\n", "red_highlight")
+        console_output.insert("end", "🔴 This player has no match data\n", "red_highlight")
         console_output.insert("end", "\n")
         console_output.see("end")
 
@@ -198,7 +199,7 @@ def generate_stats(driver, steam_id, username_text):
 # ---- Start Button Command ---- #
 def start_command():
     if not steam_links:
-        steam_profile_error_label.configure(text="Invalid Steam profile link")
+        steam_profile_error_label.configure(text="Invalid Steam Profile Link")
         console_output.see("end")
         return
     
