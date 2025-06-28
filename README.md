@@ -3,7 +3,7 @@
   <img src="images/icon-banner.png" alt="Example Image" width="300"/>
 </p>
 
-[![forthebadge](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIuMDkzNzY1MjU4Nzg5MDYiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAxOTIuMDkzNzY1MjU4Nzg5MDYgMzUiPjxyZWN0IHdpZHRoPSIxMDMuNDg0MzgyNjI5Mzk0NTMiIGhlaWdodD0iMzUiIGZpbGw9IiNjYzAwMDAiLz48cmVjdCB4PSIxMDMuNDg0MzgyNjI5Mzk0NTMiIHdpZHRoPSI4OC42MDkzODI2MjkzOTQ1MyIgaGVpZ2h0PSIzNSIgZmlsbD0iI2IzMDAwMCIvPjx0ZXh0IHg9IjUxLjc0MjE5MTMxNDY5NzI2NiIgeT0iMjEuNSIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9IidSb2JvdG8nLCBzYW5zLXNlcmlmIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMiI+TUFERSBXSVRIPC90ZXh0Pjx0ZXh0IHg9IjE0Ny43ODkwNzM5NDQwOTE4IiB5PSIyMS41IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iJ01vbnRzZXJyYXQnLCBzYW5zLXNlcmlmIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iOTAwIiBsZXR0ZXItc3BhY2luZz0iMiI+UFlUSE9OPC90ZXh0Pjwvc3ZnPg==)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
 ![GitHub Created At](https://img.shields.io/github/created-at/Emco878/CS2-Stat-Scraper) 
@@ -24,6 +24,7 @@ Download `CS2 Stat Scraper.exe`
 - Simple and easy-to-use interface
 
 ## 🎥 Demo
+[![Demo](images/demo-video-thumbnail.png)](https://youtu.be/M66f-juyNfk)
 
 
 ## 📊 Score System
