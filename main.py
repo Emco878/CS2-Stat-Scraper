@@ -7,7 +7,7 @@ import customtkinter as ctk
 import tkinter as tk
 
 # ---- Regular Imports ---- #
-import sys, os
+# import sys, os
 import requests, xml.etree.ElementTree as ET
 import threading
 from selenium import webdriver
@@ -55,12 +55,12 @@ window.configure(bg='#1E1E1E')
 window.resizable(width=False, height=False)
 
 # ---- Icon Setup ---- #
-def resource_path(relative_path):
-    # Supports PyInstaller and normal dev execution
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
+# def resource_path(relative_path):
+#     # Supports PyInstaller and normal dev execution
+#     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+#     return os.path.join(base_path, relative_path)
 
-window.iconbitmap(resource_path("icon.ico"))
+# window.iconbitmap(resource_path("icon.ico"))
 
 # ---- Custom Time ---- #
 def custom_time():
