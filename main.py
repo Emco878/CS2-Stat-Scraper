@@ -121,7 +121,8 @@ def generate_stats(driver, steam_id, username_text):
                 EC.presence_of_element_located((By.ID, "kpd"))
             )
         except:
-            console_output.insert("end", f"🔴 Timeout: Player data failed to load for {username_text}\n", "red_highlight")
+            console_output.insert("end", f"🔴 Timeout: Player data failed to load for {username_text}\n\n", "red_highlight")
+            console_output.see("end")
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             return
@@ -179,7 +180,7 @@ def generate_stats(driver, steam_id, username_text):
     score = print_stats(2.0, 1.6, "KD: ", kd)
 
     #* HLTV_RATING PRINT *#
-    score = print_stats(1.5, 1.3, "HLTV RATING: ", hltv_rating)
+    score = print_stats(1.5, 1.3, "HLTV Rating: ", hltv_rating)
 
     #* WIN RATE PRINT *#
     score = print_stats(70, 60, "Win Rate: ", win_rate, suffix="%", decimal=False)
