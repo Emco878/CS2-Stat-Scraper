@@ -124,5 +124,7 @@ git clone https://github.com/your_username/CS2-Stat-Scraper.git
  🔗 For more help: [Contributing To a Project](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
 
 ## 📝 License
-
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## 👤 Creator
+Created by Andrew Yakimtsev
