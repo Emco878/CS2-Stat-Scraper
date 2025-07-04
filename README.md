@@ -126,5 +126,8 @@ git clone https://github.com/your_username/CS2-Stat-Scraper.git
 ## 📝 License
 [MIT](https://choosealicense.com/licenses/mit/)
 
-## 👤 Creator
-Created by Andrew Yakimtsev
+## 👤 Developer Identity (for verification purposes)
+
+This project is maintained by **Andrew Yakimtsev**
+
+This information is provided as part of the identity verification process for Certum's Open-Source Code Signing Certificate.
