@@ -12,15 +12,17 @@ Any commercial use of this software, directly or indirectly, is against csstats.
 
 ![GitHub Created At](https://img.shields.io/github/created-at/Emco878/CS2-Stat-Scraper) 
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Emco878/CS2-Stat-Scraper/main)
+[![GitHub release](https://img.shields.io/github/v/release/Emco878/CS2-Stat-Scraper?label=latest%20release)](https://github.com/Emco878/CS2-Stat-Scraper/releases/latest)
+
 
 
 # 📌 Description
 **CS2 Stat Scraper** is a tool that processes multiple Steam profiles and retrieves their stats from `CSStats.gg`.
 
 ## 🛠️ Installation
-Download `CS2 Stat Scraper.exe`
+Download the latest release version of [CS2 Stat Scraper.exe](https://github.com/Emco878/CS2-Stat-Scraper/releases/latest)
 
->⚠️ Note: This app is unsigned - SmartScreen may warn you. It’s safe. The source code, can be found in `main.py`
+>⚠️ Note: This app is now signed however SmartScreen may warn you as my repuration is low. The program is safe. The source code, can be found in `main.py`
 
 ## ✨ Features
 - Input up to 10 Steam Profiles
