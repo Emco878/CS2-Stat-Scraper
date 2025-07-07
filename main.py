@@ -7,7 +7,7 @@ import customtkinter as ctk
 import tkinter as tk
 
 # ---- Regular Imports ---- #
-# import sys, os
+import sys, os
 import requests, xml.etree.ElementTree as ET
 import threading
 from selenium import webdriver
@@ -55,12 +55,12 @@ window.configure(bg='#1E1E1E')
 window.resizable(width=False, height=False)
 
 # ---- Icon Setup ---- #
-# def resource_path(relative_path):
-#     # Supports PyInstaller and normal dev execution
-#     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-#     return os.path.join(base_path, relative_path)
+def resource_path(relative_path):
+    # Supports PyInstaller and normal dev execution
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
-# window.iconbitmap(resource_path("icon.ico"))
+window.iconbitmap(resource_path("icon.ico"))
 
 # ---- Custom Time ---- #
 def custom_time():
@@ -204,6 +204,20 @@ def generate_stats(driver, steam_id, username_text):
     
     driver.close()  # Close the stats tab
     driver.switch_to.window(driver.window_handles[0])  # Back to main tab
+
+# ---- Pin Button Command ---- #
+pin_visible = False
+
+def pin_command():
+    global pin_visible
+    if pin_visible:
+        window.wm_attributes("-topmost", 0)
+        pinned_button.place_forget()
+        pin_visible = False
+    else:
+        window.wm_attributes("-topmost", 1)
+        pinned_button.place(x=475, y=135)
+        pin_visible = True
 
 # ---- Start Button Command ---- #
 def start_command():
@@ -358,6 +372,15 @@ clear_yes = ctk.CTkButton(window, command=clear_command, text="Yes", font=('Sego
 clear_no = ctk.CTkButton(window, command=clear_confirm, text="No", font=('Segoe UI', 18), width=90, height=38, text_color='#FFFFFF', fg_color="transparent",
                              hover_color='#444444', border_color="#FFFFFF", border_width=1.5)
 
+#* PIN BUTTON DISABLED *#
+pin_button = ctk.CTkButton(window, command=pin_command, text="📌", font=('Segoe UI', 18), width=38, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444')
+pin_button.place(x=475, y=135)    # (x=472, y=2)
+
+#* PIN BUTTON ENABLED *#
+pinned_button = ctk.CTkButton(window, command=pin_command, text="🔒", font=('Segoe UI', 18), width=38, height=38, text_color='#FFFFFF', fg_color="transparent",
+                             hover_color='#444444')
+
 # Bind to background clicks to remove focus
 def unfocus(event):
     if isinstance(event.widget, (ctk.CTkEntry, ctk.CTkButton, ctk.CTkOptionMenu, ctk.CTkCheckBox, ctk.CTkSwitch, tk.Entry, tk.Button)): # If the clicked widget is an interactive input, don't remove focus
@@ -367,4 +390,4 @@ def unfocus(event):
 window.bind("<Button-1>", unfocus)
 window.mainloop()
 
-# TODO: Custom taskbar icon in tkinter and customtkinter
+# TODO: Clean Up Libraries
