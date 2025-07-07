@@ -22,7 +22,7 @@ Any commercial use of this software, directly or indirectly, is against csstats.
 ## 🛠️ Installation
 Download the latest release version of [CS2 Stat Scraper.exe](https://github.com/Emco878/CS2-Stat-Scraper/releases/latest)
 
->⚠️ Note: This app is now signed however SmartScreen may warn you as my repuration is low. The program is safe. The source code, can be found in `main.py`
+>⚠️ Note: This app is now signed however SmartScreen may warn you as my reputation is low. The program is safe. The source code, can be found in `main.py`
 
 ## ✨ Features
 - Input up to 10 Steam Profiles
