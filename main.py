@@ -106,7 +106,7 @@ def generate_stats(driver, steam_id, username_text):
         )
 
         #* NO DATA ACCOUNT STATUS *#
-        console_output.insert("end", f"Steam Name: {username_text}\n")
+        console_output.insert("end", f"Steam Name: {username_text} \n")
         console_output.insert("end", "🔴 This player has no match data\n", "red_highlight")
         console_output.insert("end", "\n")
         console_output.see("end")
@@ -170,11 +170,11 @@ def generate_stats(driver, steam_id, username_text):
         decimal_value = f"{tag:.2f}" if decimal else f"{int(tag)}"
         
         console_output.insert("end", f"{label}")
-        console_output.insert("end", f"{decimal_value}{suffix}\n", highlight)
+        console_output.insert("end", f"{decimal_value}{suffix} \n", highlight)
         return score
 
     #* USERNAME PRINT *#
-    console_output.insert("end", f"Steam Name: {username_text}\n")
+    console_output.insert("end", f"Steam Name: {username_text} \n")
 
     #* KD PRINT *#
     score = print_stats(2.0, 1.6, "KD: ", kd)
@@ -193,11 +193,11 @@ def generate_stats(driver, steam_id, username_text):
 
     #* SCORE PRINT *#
     if (score >= 9):
-        console_output.insert("end", f"SCORE: {score}\n", "red_highlight")
+        console_output.insert("end", f"SCORE: {score} \n", "red_highlight")
     elif (score >= 7):
-        console_output.insert("end", f"SCORE: {score}\n", "yellow_highlight")
+        console_output.insert("end", f"SCORE: {score} \n", "yellow_highlight")
     else:
-        console_output.insert("end", f"SCORE: {score}\n", "lightblue_highlight")
+        console_output.insert("end", f"SCORE: {score} \n", "lightblue_highlight")
 
     console_output.insert("end", "\n")
     console_output.see("end")
@@ -341,8 +341,8 @@ console_label.place(x=30, y=300)
 console_output = ctk.CTkTextbox(window, font=('Segoe UI', 16), width=480, height=480, corner_radius=8, fg_color="#1E1E1E", border_color="#FFFFFF", border_width=1.5,
                                 text_color="#FFFFFF", wrap='none')
 console_output.place(x=30, y=335)
-console_output.bind("<Key>", lambda e: "break") # Block all keyboard input
-console_output.configure(insertwidth=0) # Hide the cursor
+console_output.bind("<Key>", lambda e: None if (e.state & 0x4 and e.keysym.lower() == "c") else "break") # Block all keyboard input
+console_output.configure(insertwidth=0) # Hides the cursor
 
 console_output.tag_config("red_highlight", foreground="#FF0000")
 console_output.tag_config("yellow_highlight", foreground="#FFFF00")
@@ -383,7 +383,7 @@ pinned_button = ctk.CTkButton(window, command=pin_command, text="🔒", font=('S
 
 # Bind to background clicks to remove focus
 def unfocus(event):
-    if isinstance(event.widget, (ctk.CTkEntry, ctk.CTkButton, ctk.CTkOptionMenu, ctk.CTkCheckBox, ctk.CTkSwitch, tk.Entry, tk.Button)): # If the clicked widget is an interactive input, don't remove focus
+    if isinstance(event.widget, (ctk.CTkEntry, ctk.CTkButton, ctk.CTkOptionMenu, ctk.CTkCheckBox, ctk.CTkSwitch, ctk.CTkTextbox, tk.Entry, tk.Button, tk.Text)): # If the clicked widget is an interactive input, don't remove focus
         return  # Keep focus
     window.focus()
 
